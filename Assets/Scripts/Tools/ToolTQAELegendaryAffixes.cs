@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace GrimDawnModdingTool
 {
-    public class ToolLegendaryAffixes : ToolButton
+    public class ToolTQAELegendaryAffixes : ToolButton
     {
-        public override string Name { get => "Legendary Affixes"; }
+        public override string Name { get => "ToolTQAELegendaryAffixes"; }
         public override string Description { get; }
 
         public Dictionary<string, GrimObject> makeAffixDict(List<GrimObject> list)
@@ -18,36 +18,41 @@ namespace GrimDawnModdingTool
             Dictionary<string, List<TQAffixTable>> dict = new Dictionary<string, List<TQAffixTable>>();
 
             foreach (GrimObject obj in list) {
-                if (obj.FilePath.Contains("loottables") && obj.Dict.ContainsKey("lootName1")) {
+                if (obj.Dict.ContainsKey("lootName1")) {
                     string path = Save.Instance.FilesToEditPath + "/" + obj.Dict["lootName1"];
-                    GrimObject item = new GrimObject(path);
+                    if (File.Exists(path)) {
+                        GrimObject item = new GrimObject(path);
 
-                    string key = item.Dict["Class"];
+                        string key = item.Dict["Class"];
 
-                    if (dict.ContainsKey(key) == false) {
-                        dict[key] = new List<TQAffixTable>();
-                    }
+                        if (dict.ContainsKey(key) == false) {
+                            dict[key] = new List<TQAffixTable>();
+                        }
 
-                    var types = new List<string>() { "suffix", "prefix", "rareSuffix", "rarePrefix" };
+                        var types = new List<string>() { "suffix", "prefix" };
 
-                    for (int y = 0; y < 10; y++) {
-                        foreach (string type in types) {
-                            var table = new TQAffixTable(obj, y, type);
-                            if (table.exists(obj)) {
-                                table.setData(obj);
+                        for (int y = 0; y < 10; y++) {
+                            foreach (string type in types) {
+                                var table = new TQAffixTable(obj, y, type);
+                                if (table.exists(obj)) {
+                                    table.setData(obj);
 
-                                bool add = true;
+                                    bool add = true;
 
-                                foreach (TQAffixTable checktable in dict[key]) {
-                                    if (table.table == checktable.table) {
-                                        add = false;
+                                    foreach (TQAffixTable checktable in dict[key]) {
+                                        if (table.table == checktable.table) {
+                                            add = false;
+                                        }
                                     }
-                                }
-                                if (add) {
-                                    dict[key].Add(table);
+                                    if (add) {
+                                        dict[key].Add(table);
+                                    }
                                 }
                             }
                         }
+                    }
+                    else {
+                        Debug.Log(path + "Doesnt exist");
                     }
                 }
             }
@@ -95,47 +100,54 @@ namespace GrimDawnModdingTool
         {
             GrimObject chances = new GrimObject(Path.Combine(Save.Instance.DataPath, "chances.txt"));
 
-            var list = new List<GrimObject>(FileManager.GetObjectsFromAllFilesInPath(Path.Combine(Save.Instance.FilesToEditPath, "records", "items", "loottables"), true));
+            List<GrimObject> list = new List<GrimObject>(FileManager.GetObjectsFromAllFilesInPath(Path.Combine(Save.Instance.FilesToEditPath, "records"), true).Where(x => x.FilePath.Contains("loottables")));
 
-            var newlist = new List<GrimObject>();
+            var uniqueitemlist = new List<GrimObject>();
 
             Dictionary<string, GrimObject> dict = makeAffixDict(list);
 
             foreach (GrimObject obj in list) {
                 if (isUniqueItemLootTable(obj)) {
-                    newlist.Add(obj);
+                    uniqueitemlist.Add(obj);
                 }
             }
+            Debug.Log("There are " + uniqueitemlist.Count + " unique items.");
 
-            foreach (GrimObject obj in list) {
-                if (obj.FilePath.Contains("loottables") && obj.Dict.ContainsKey("lootName1")) {
-                    string path = Save.Instance.FilesToEditPath + "/" + obj.Dict["lootName1"];
-                    GrimObject item = new GrimObject(path);
+            foreach (GrimObject obj in uniqueitemlist) {
+                if (obj.Dict.ContainsKey("itemNames")) {
+                    string path = Path.Combine(Save.Instance.FilesToEditPath, obj.Dict["itemNames"].getFirstRecord());
 
-                    string key = item.Dict["Class"];
+                    if (File.Exists(path)) {
+                        GrimObject item = new GrimObject(path);
 
-                    if (dict.ContainsKey(key)) {
-                        addRandomAffixesToLootTable(obj, dict[key]);
+                        string key = item.Dict["Class"];
 
-                        Debug.Log("key exists: " + key);
+                        if (dict.ContainsKey(key)) {
+                            Debug.Log("key exists: " + key);
+                            addRandomAffixesToLootTable(obj, dict[key]);
+                        }
+                        else {
+                            Debug.Log("no key: " + key);
+                        }
                     }
                     else {
-                        Debug.Log("no key: " + key);
+                        Debug.Log("file doesn't exist " + path);
                     }
                 }
             }
 
-            foreach (GrimObject obj in newlist) {
+            foreach (GrimObject obj in uniqueitemlist) {
                 foreach (KeyValuePair<string, string> entry in chances.Dict) {
                     obj.Dict[entry.Key] = entry.Value;
                 }
             }
 
-            FileManager.WriteCopy(Save.Instance.OutputPath, newlist);
+            FileManager.WriteCopy(Save.Instance.OutputPath, uniqueitemlist);
         }
 
         public void addRandomAffixesToLootTable(GrimObject obj, GrimObject affixes)
         {
+            Debug.Log(affixes.Dict.Values.Count);
             foreach (KeyValuePair<string, string> entry in affixes.Dict) {
                 obj.Dict[entry.Key] = entry.Value;
             }
@@ -145,12 +157,18 @@ namespace GrimDawnModdingTool
         {
             //List<string> mustbezero = new List<string>() { "suffixOnly", "prefixOnly", "rarePrefixOnly", "bothPrefixSuffix", "rareBothPrefixSuffix" };
 
-            if (obj.FilePath.Contains("loottables") && obj.Dict.ContainsKey("lootName1")) {
-                string path = Save.Instance.FilesToEditPath + "/" + obj.Dict["lootName1"];
-                GrimObject item = new GrimObject(path);
+            if (obj.Dict.ContainsKey("itemNames")) {
+                string path = Save.Instance.FilesToEditPath + "/" + obj.Dict["itemNames"].getFirstRecord();
 
-                if (item.isEpic() || item.isLegendary()) {
-                    return true;
+                if (File.Exists(path)) {
+                    GrimObject item = new GrimObject(path);
+
+                    if (item.isEpic() || item.isLegendary()) {
+                        return true;
+                    }
+                }
+                else {
+                    Debug.Log(path + " doesn't exist");
                 }
             }
 
