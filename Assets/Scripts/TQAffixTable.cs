@@ -11,45 +11,50 @@ namespace GrimDawnModdingTool
 
         public int level = 0;
         public string typeName = "";
-        public string tableName = "";
-        public string weightName = "";
 
-        public string table = "";
-        public string weight = "100";
+        public string tableValue = "";
+        public string weightValue = "100";
+
+        public bool IsPrefix()
+        {
+            return this.typeName.Equals("prefix");
+        }
 
         public TQAffixTable(int number, string type, int lvl)
         {
             this.typeName = type;
             this.number = number;
             this.level = lvl;
-
-            this.setNameInfo();
         }
 
         public void addTo(TQObject obj)
         {
-            obj.Dict[this.tableName] = table;
-            obj.Dict[this.weightName] = weight;
+            obj.Dict[this.getTableKey(number)] = tableValue;
+            obj.Dict[this.getWeightKey(number)] = weightValue;
         }
 
         public void setData(TQObject obj)
         {
-            this.table = obj.Dict[tableName];
+            this.tableValue = obj.Dict[getTableKey(number)];
 
-            if (obj.Dict.ContainsKey(weightName)) {
-                this.weight = obj.Dict[weightName];
+            if (obj.Dict.ContainsKey(getWeightKey(number))) {
+                this.weightValue = obj.Dict[getWeightKey(number)];
             }
         }
 
-        public void setNameInfo()
+        public string getTableKey(int num)
         {
-            this.tableName = typeName + "RandomizerName" + number;
-            this.weightName = typeName + "RandomizerWeight" + number;
+            return typeName + "RandomizerName" + num;
+        }
+
+        public string getWeightKey(int num)
+        {
+            return typeName + "RandomizerWeight" + num;
         }
 
         public bool exists(TQObject obj)
         {
-            return obj.Dict.ContainsKey(this.tableName);
+            return obj.Dict.ContainsKey(this.getTableKey(number));
         }
 
         public override int GetHashCode()
@@ -58,10 +63,8 @@ namespace GrimDawnModdingTool
             hashCode = hashCode * -1521134295 + number.GetHashCode();
             hashCode = hashCode * -1521134295 + level.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(typeName);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(tableName);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(weightName);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(table);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(weight);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(tableValue);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(weightValue);
             return hashCode;
         }
 
@@ -71,10 +74,8 @@ namespace GrimDawnModdingTool
                  number == table.number &&
                  level == table.level &&
                  typeName == table.typeName &&
-                 tableName == table.tableName &&
-                 weightName == table.weightName &&
-                 this.table == table.table &&
-                 weight == table.weight;
+                 this.tableValue == table.tableValue &&
+                 weightValue == table.weightValue;
         }
     }
 }

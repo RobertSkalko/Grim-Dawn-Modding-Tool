@@ -9,7 +9,7 @@ namespace GrimDawnModdingTool
 {
     public class TQAffixUtils : MonoBehaviour
     {
-        public static Dictionary<string, TQObject> makeAffixDict(ConcurrentBag<TQObject> loottables)
+        public static Dictionary<string, LootAffixTable> makeAffixDict(ConcurrentBag<TQObject> loottables)
         {
             Dictionary<string, HashSet<TQAffixTable>> dict = new Dictionary<string, HashSet<TQAffixTable>>(); // here all the affixes stored
 
@@ -49,7 +49,7 @@ namespace GrimDawnModdingTool
                 }
             }
 
-            var finaldict = new Dictionary<string, TQObject>();
+            var finaldict = new Dictionary<string, LootAffixTable>();
 
             foreach (KeyValuePair<string, HashSet<TQAffixTable>> entry in dict) {
                 var sorted = new Dictionary<string, List<TQAffixTable>>();
@@ -73,17 +73,18 @@ namespace GrimDawnModdingTool
                             counts[sort.Key] = 1;
                         }
                         t.number = counts[sort.Key];
-                        t.setNameInfo();
 
                         if (finaldict.ContainsKey(entry.Key)) {
-                            t.addTo(finaldict[entry.Key]);
+                            finaldict[entry.Key].AddAffixTables(t);
                         }
                         else {
-                            finaldict[entry.Key] = new TQObject();
+                            finaldict[entry.Key] = new LootAffixTable();
                         }
                     }
                 }
             }
+
+            // im kinda lost on what the old code up does..
 
             string keys = "";
             new List<string>(dict.Keys).ForEach(x => keys += " " + x);

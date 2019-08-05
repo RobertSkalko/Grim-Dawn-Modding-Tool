@@ -12,14 +12,15 @@ namespace GrimDawnModdingTool
             this.dict = TQAffixUtils.makeAffixDict(allLootTables);
         }
 
-        private Dictionary<string, TQObject> dict = new Dictionary<string, TQObject>();
+        private Dictionary<string, LootAffixTable> dict = new Dictionary<string, LootAffixTable>();
 
         public void TryGiveAffixesToLoottable(TQObject loottable, string gearType)
         {
             if (dict.ContainsKey(gearType)) {
-                foreach (KeyValuePair<string, string> entry in dict[gearType].Dict) {
-                    loottable.Dict[entry.Key] = entry.Value;
-                }
+                LootAffixContainer affixes = dict[gearType].GetAffixesFor(loottable.getFirstObjectOfLootTable());
+
+                loottable.ReplaceWithAllValuesOf(affixes.prefixes);
+                loottable.ReplaceWithAllValuesOf(affixes.suffixes);
             }
             else {
                 Debug.Log("no key: " + gearType);
