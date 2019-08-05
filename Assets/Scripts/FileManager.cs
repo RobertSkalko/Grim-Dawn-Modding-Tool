@@ -32,5 +32,27 @@ namespace GrimDawnModdingTool
                 File.WriteAllText(newpath, obj.GetTextRepresentation());
             }
         }
+
+        public static ConcurrentBag<TQObject> GetAllObjects(string path, Predicate<string> pathpred, Predicate<TQObject> objpred, string ending = ".dbr")
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            var list = new ConcurrentBag<TQObject>();
+
+            Parallel.ForEach(Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories), (file) => {
+                if (file.EndsWith(ending) && pathpred(file)) {
+                    TQObject obj = new TQObject(file);
+                    if (objpred(obj)) {
+                        list.Add(obj);
+                    }
+                }
+            });
+
+            stopwatch.Stop();
+            Debug.Log("Getting Objects from files took: " + stopwatch.ElapsedMilliseconds + " Miliseconds or " + stopwatch.ElapsedMilliseconds / 1000 + " Seconds");
+
+            return list;
+        }
     }
 }

@@ -12,12 +12,12 @@ namespace GrimDawnModdingTool
         public int level = 0;
         public string typeName = "";
 
-        public string tableValue = "";
+        public string recordValue = "";
         public string weightValue = "100";
 
         public bool IsPrefix()
         {
-            return this.typeName.Equals("prefix");
+            return this.typeName.ToLower().Equals("prefix");
         }
 
         public TQAffixTable(int number, string type, int lvl)
@@ -29,13 +29,13 @@ namespace GrimDawnModdingTool
 
         public void addTo(TQObject obj)
         {
-            obj.Dict[this.getTableKey(number)] = tableValue;
+            obj.Dict[this.getTableKey(number)] = recordValue;
             obj.Dict[this.getWeightKey(number)] = weightValue;
         }
 
         public void setData(TQObject obj)
         {
-            this.tableValue = obj.Dict[getTableKey(number)];
+            this.recordValue = obj.Dict[getTableKey(number)];
 
             if (obj.Dict.ContainsKey(getWeightKey(number))) {
                 this.weightValue = obj.Dict[getWeightKey(number)];
@@ -63,7 +63,7 @@ namespace GrimDawnModdingTool
             hashCode = hashCode * -1521134295 + number.GetHashCode();
             hashCode = hashCode * -1521134295 + level.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(typeName);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(tableValue);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(recordValue);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(weightValue);
             return hashCode;
         }
@@ -74,7 +74,7 @@ namespace GrimDawnModdingTool
                  number == table.number &&
                  level == table.level &&
                  typeName == table.typeName &&
-                 this.tableValue == table.tableValue &&
+                 this.recordValue == table.recordValue &&
                  weightValue == table.weightValue;
         }
     }

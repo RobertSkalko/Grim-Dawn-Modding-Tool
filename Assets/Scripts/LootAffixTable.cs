@@ -16,7 +16,7 @@ namespace GrimDawnModdingTool
 
         public void Add(TQAffixTable table)
         {
-            if (alreadyAdded.Contains(table.tableValue) == false) {
+            if (alreadyAdded.Contains(table.recordValue) == false) {
                 if (table.IsPrefix()) {
                     table.number = prefixNum;
                     table.addTo(prefixes);
@@ -28,7 +28,7 @@ namespace GrimDawnModdingTool
                     suffixNum++;
                 }
 
-                alreadyAdded.Add(table.tableValue);
+                alreadyAdded.Add(table.recordValue);
             }
         }
     }
