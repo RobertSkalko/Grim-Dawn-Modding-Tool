@@ -6,7 +6,7 @@ namespace GrimDawnModdingTool
 {
     public class TQAffixTable
     {
-        public TQAffixTable(TQObject obj, int number, string type)
+        public TQAffixTable(int number, string type)
         {
             this.typeName = type;
             this.number = number;
@@ -47,6 +47,6 @@ namespace GrimDawnModdingTool
         public string weightName;
 
         public string table;
-        public string weight;
+        public string weight = "100";
     }
 }

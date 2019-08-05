@@ -36,7 +36,7 @@ namespace GrimDawnModdingTool
                             y = 0;
 
                             while (fails < 2) {
-                                var table = new TQAffixTable(obj, y, type);
+                                var table = new TQAffixTable(y, type);
                                 if (table.exists(obj)) {
                                     table.setData(obj);
 
@@ -99,6 +99,10 @@ namespace GrimDawnModdingTool
                     }
                 }
             }
+
+            string keys = "";
+            new List<string>(dict.Keys).ForEach(x => keys += " " + x);
+            Debug.Log(keys);
 
             return finaldict;
         }

@@ -13,6 +13,16 @@ namespace GrimDawnModdingTool
 {
     public static class Extensions
     {
+        public static string getFirstRecord(this string @this)
+        {
+            if (@this.Contains(";")) {
+                return @this.Split(';')[0];
+            }
+            else {
+                return @this;
+            }
+        }
+
         public static string GetPathOfRecord(this string record)
         {
             if (record.Contains("ecord") == false) {
