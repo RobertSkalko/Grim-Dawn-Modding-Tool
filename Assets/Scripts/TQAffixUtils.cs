@@ -9,57 +9,51 @@ namespace GrimDawnModdingTool
 {
     public class TQAffixUtils : MonoBehaviour
     {
-        public static Dictionary<string, TQObject> makeAffixDict(ConcurrentBag<TQObject> list)
+        public static Dictionary<string, TQObject> makeAffixDict(ConcurrentBag<TQObject> loottables)
         {
-            Dictionary<string, List<TQAffixTable>> dict = new Dictionary<string, List<TQAffixTable>>();
+            Dictionary<string, List<TQAffixTable>> dict = new Dictionary<string, List<TQAffixTable>>(); // here all the affixes stored
 
-            foreach (TQObject obj in list) {
-                if (obj.Dict.ContainsKey("lootName1")) {
-                    string path = obj.Dict["lootName1"].GetPathOfRecord();
-                    if (File.Exists(path)) {
-                        TQObject item = new TQObject(path);
+            foreach (TQObject loottable in loottables) {
+                TQObject item = loottable.getFirstObjectOfLootTable();
 
-                        string key = item.Dict["Class"];
+                if (item != null) {
+                    string key = item.GetClass();
 
-                        if (dict.ContainsKey(key) == false) {
-                            dict[key] = new List<TQAffixTable>();
-                        }
-
-                        var types = new List<string>() { "suffix", "prefix" };
-
-                        int fails = 0;
-
-                        int y = 0;
-
-                        foreach (string type in types) {
-                            fails = 0;
-                            y = 0;
-
-                            while (fails < 2) {
-                                var table = new TQAffixTable(y, type);
-                                if (table.exists(obj)) {
-                                    table.setData(obj);
-
-                                    bool add = true;
-
-                                    foreach (TQAffixTable checktable in dict[key]) {
-                                        if (table.table == checktable.table) {
-                                            add = false;
-                                        }
-                                    }
-                                    if (add) {
-                                        dict[key].Add(table);
-                                    }
-                                }
-                                else {
-                                    fails++;
-                                }
-                                y++;
-                            }
-                        }
+                    if (dict.ContainsKey(key) == false) {
+                        dict[key] = new List<TQAffixTable>();
                     }
-                    else {
-                        Debug.Log(path + "Doesnt exist");
+
+                    var suffixAndPrefix = new List<string>() { "suffix", "prefix" };
+
+                    int fails = 0;
+
+                    int y = 0;
+
+                    foreach (string affixType in suffixAndPrefix) {
+                        fails = 0;
+                        y = 0;
+
+                        while (fails < 2) {
+                            var table = new TQAffixTable(y, affixType);
+                            if (table.exists(loottable)) {
+                                table.setData(loottable);
+
+                                bool add = true;
+
+                                foreach (TQAffixTable checktable in dict[key]) {
+                                    if (table.table == checktable.table) {
+                                        add = false;
+                                    }
+                                }
+                                if (add) {
+                                    dict[key].Add(table);
+                                }
+                            }
+                            else {
+                                fails++;
+                            }
+                            y++;
+                        }
                     }
                 }
             }
@@ -69,8 +63,6 @@ namespace GrimDawnModdingTool
             foreach (KeyValuePair<string, List<TQAffixTable>> entry in dict) {
                 var sorted = new Dictionary<string, List<TQAffixTable>>();
 
-                var counts = new Dictionary<string, int>();
-
                 foreach (TQAffixTable table in entry.Value) {
                     if (sorted.ContainsKey(table.typeName)) {
                         sorted[table.typeName].Add(table);
@@ -79,6 +71,8 @@ namespace GrimDawnModdingTool
                         sorted[table.typeName] = new List<TQAffixTable>();
                     }
                 }
+                var counts = new Dictionary<string, int>();
+
                 foreach (KeyValuePair<string, List<TQAffixTable>> sort in sorted) {
                     foreach (TQAffixTable t in sort.Value) {
                         if (counts.ContainsKey(sort.Key)) {

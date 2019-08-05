@@ -6,6 +6,15 @@ namespace GrimDawnModdingTool
 {
     public class TQAffixTable
     {
+        public int number = 0;
+
+        public string typeName;
+        public string tableName;
+        public string weightName;
+
+        public string table;
+        public string weight = "100";
+
         public TQAffixTable(int number, string type)
         {
             this.typeName = type;
@@ -39,14 +48,5 @@ namespace GrimDawnModdingTool
         {
             return obj.Dict.ContainsKey(this.tableName);
         }
-
-        public int number = 0;
-
-        public string typeName;
-        public string tableName;
-        public string weightName;
-
-        public string table;
-        public string weight = "100";
     }
 }

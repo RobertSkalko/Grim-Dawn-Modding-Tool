@@ -9,6 +9,21 @@ namespace GrimDawnModdingTool
     {
         private static string ITEM_CLASSIFICATION = "itemClassification";
 
+        public static TQObject getFirstObjectOfLootTable(this TQObject loottable)
+        {
+            if (loottable.Dict.ContainsKey("itemNames")) {
+                string path = loottable.Dict["itemNames"].getFirstRecord().GetPathOfRecord();
+
+                if (File.Exists(path)) {
+                    return new TQObject(path);
+                }
+                else {
+                    Debug.Log("file doesn't exist " + path);
+                }
+            }
+            return null;
+        }
+
         public static bool isLegendary(this TQObject @this)
         {
             return @this.Dict.ContainsKey(ITEM_CLASSIFICATION) && @this.Dict[ITEM_CLASSIFICATION] == "Legendary";
@@ -17,6 +32,11 @@ namespace GrimDawnModdingTool
         public static bool isEpic(this TQObject @this)
         {
             return @this.Dict.ContainsKey(ITEM_CLASSIFICATION) && @this.Dict[ITEM_CLASSIFICATION] == "Epic";
+        }
+
+        public static bool isUnique(this TQObject @this)
+        {
+            return @this.isEpic() || @this.isLegendary();
         }
 
         public static bool isUniqueItemLootTable(this TQObject obj)
@@ -29,7 +49,7 @@ namespace GrimDawnModdingTool
                 if (File.Exists(path)) {
                     TQObject item = new TQObject(path);
 
-                    if (item.isEpic() || item.isLegendary()) {
+                    if (item.isUnique()) {
                         return true;
                     }
                 }

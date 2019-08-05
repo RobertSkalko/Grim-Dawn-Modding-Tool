@@ -21,6 +21,15 @@ namespace GrimDawnModdingTool
             }
         }
 
+        public int GetItemLevel()
+        {
+            if (this.Dict.ContainsKey("itemLevel")) {
+                return int.Parse(this.Dict["itemLevel"]);
+            }
+
+            return 0;
+        }
+
         public int CompareTo(TQObject other)
         {
             return FilePath.CompareTo(other.FilePath) == 1 ? 1 : 0;

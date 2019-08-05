@@ -29,24 +29,16 @@ namespace GrimDawnModdingTool
             ConcurrentBag<TQObject> allLootTables = GetAllObjects(Save.Instance.GetRecordsPath());
             LootAffixes affixes = new LootAffixes(allLootTables);
             var uniqueitemLoottableList = allLootTables.Where(x => x.isUniqueItemLootTable()).ToList();
-            Dictionary<string, TQObject> dict = TQAffixUtils.makeAffixDict(allLootTables);
 
             Debug.Log("There are " + uniqueitemLoottableList.Count + " unique items.");
 
             foreach (TQObject loottable in uniqueitemLoottableList) {
-                if (loottable.Dict.ContainsKey("itemNames")) {
-                    string path = loottable.Dict["itemNames"].getFirstRecord().GetPathOfRecord();
+                TQObject gear = loottable.getFirstObjectOfLootTable();
 
-                    if (File.Exists(path)) {
-                        TQObject item = new TQObject(path);
+                if (gear != null) {
+                    string type = gear.GetClass();
 
-                        string type = item.GetClass();
-
-                        affixes.TryGiveAffixesToLoottable(loottable, type);
-                    }
-                    else {
-                        Debug.Log("file doesn't exist " + path);
-                    }
+                    affixes.TryGiveAffixesToLoottable(loottable, type);
                 }
             }
 
