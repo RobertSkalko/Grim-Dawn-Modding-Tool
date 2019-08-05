@@ -7,16 +7,43 @@ using UnityEngine;
 
 namespace GrimDawnModdingTool
 {
-    public class GrimObject : IEquatable<GrimObject>, IComparable<GrimObject>
+    public class TQObject : IEquatable<TQObject>, IComparable<TQObject>
     {
-        public bool Equals(GrimObject other)
+        public bool Equals(TQObject other)
         {
             return this.Dict == other.Dict;
         }
 
-        public int CompareTo(GrimObject other)
+        public void ReplaceWithAllValuesOf(TQObject obj)
+        {
+            foreach (KeyValuePair<string, string> entry in obj.Dict) {
+                this.Dict[entry.Key] = entry.Value;
+            }
+        }
+
+        public int CompareTo(TQObject other)
         {
             return FilePath.CompareTo(other.FilePath) == 1 ? 1 : 0;
+        }
+
+        public bool HasTemplate()
+        {
+            return Dict.ContainsKey("templateName");
+        }
+
+        public string GetTemplate()
+        {
+            return Dict["templateName"];
+        }
+
+        public bool HasClass()
+        {
+            return Dict.ContainsKey("Class");
+        }
+
+        public string GetClass()
+        {
+            return Dict["Class"];
         }
 
         public override int GetHashCode()
@@ -24,26 +51,37 @@ namespace GrimDawnModdingTool
             return Dict.GetHashCode();
         }
 
+        public bool anyKeyContains(string str)
+        {
+            foreach (var key in Dict.Keys.ToList()) {
+                if (key.Contains(str)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public string FilePath;
         public Dictionary<string, string> Dict = new Dictionary<string, string>();
 
-        public GrimObject(string path)
+        public TQObject(string path)
         {
-            string text = File.ReadAllText(path);
+            string text = CommentRemover.RemoveComments(File.ReadAllText(path));
 
             this.FilePath = path;
 
             SetupDBInfo(text);
         }
 
-        public GrimObject(string text, string filepath)
+        public TQObject(string text, string filepath)
         {
             this.FilePath = filepath;
 
             SetupDBInfo(text);
         }
 
-        public GrimObject()
+        public TQObject()
         {
         }
 

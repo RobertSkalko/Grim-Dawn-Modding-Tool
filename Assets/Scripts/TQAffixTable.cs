@@ -6,7 +6,7 @@ namespace GrimDawnModdingTool
 {
     public class TQAffixTable
     {
-        public TQAffixTable(GrimObject obj, int number, string type)
+        public TQAffixTable(TQObject obj, int number, string type)
         {
             this.typeName = type;
             this.number = number;
@@ -14,16 +14,19 @@ namespace GrimDawnModdingTool
             this.setNameInfo();
         }
 
-        public void addTo(GrimObject obj)
+        public void addTo(TQObject obj)
         {
             obj.Dict[this.tableName] = table;
             obj.Dict[this.weightName] = weight;
         }
 
-        public void setData(GrimObject obj)
+        public void setData(TQObject obj)
         {
             this.table = obj.Dict[tableName];
-            this.weight = obj.Dict[weightName];
+
+            if (obj.Dict.ContainsKey(weightName)) {
+                this.weight = obj.Dict[weightName];
+            }
         }
 
         public void setNameInfo()
@@ -32,7 +35,7 @@ namespace GrimDawnModdingTool
             this.weightName = typeName + "RandomizerWeight" + number;
         }
 
-        public bool exists(GrimObject obj)
+        public bool exists(TQObject obj)
         {
             return obj.Dict.ContainsKey(this.tableName);
         }

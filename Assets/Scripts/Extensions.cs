@@ -13,6 +13,15 @@ namespace GrimDawnModdingTool
 {
     public static class Extensions
     {
+        public static string GetPathOfRecord(this string record)
+        {
+            if (record.Contains("ecord") == false) {
+                Debug.Log(record + " is not a record");
+            }
+
+            return Save.Instance.GetFolder() + record;
+        }
+
         public static void AddRange<T>(this ConcurrentBag<T> @this, IEnumerable<T> toAdd)
         {
             Parallel.ForEach(toAdd, (elem) => {
@@ -20,7 +29,7 @@ namespace GrimDawnModdingTool
             });
         }
 
-        public static List<string> ToStringList(this List<GrimObject> objects)
+        public static List<string> ToStringList(this List<TQObject> objects)
         {
             var list = new List<string>();
             objects.ForEach(x => list.Add(x.GetTextRepresentation()));
@@ -28,7 +37,7 @@ namespace GrimDawnModdingTool
             return list;
         }
 
-        public static string JoinIntoString(this List<GrimObject> objects)
+        public static string JoinIntoString(this List<TQObject> objects)
         {
             return string.Join("\n", objects.ToStringList().ToArray());
         }

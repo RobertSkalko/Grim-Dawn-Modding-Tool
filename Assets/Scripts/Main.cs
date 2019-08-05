@@ -19,17 +19,6 @@ namespace GrimDawnModdingTool
             derivedTypes.ForEach(x => buttons.Add((ToolButton)Activator.CreateInstance(x)));
             return buttons;
         }
-
-        public static string RemoveComments(string file)
-        {
-            Regex comments1 = new Regex(@"//.*?\n");
-            Regex comments2 = new Regex(@"/\*(.|\n)*?\*/");
-
-            string afterRemoval = comments1.Replace(file, "");
-            afterRemoval = comments2.Replace(afterRemoval, "");
-
-            return afterRemoval;
-        }
     }
 
     public enum Modifiers

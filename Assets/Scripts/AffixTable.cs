@@ -6,7 +6,7 @@ namespace GrimDawnModdingTool
 {
     public class AffixTable
     {
-        public AffixTable(GrimObject obj, int number, string type)
+        public AffixTable(TQObject obj, int number, string type)
         {
             this.typeName = type;
             this.number = number;
@@ -14,7 +14,7 @@ namespace GrimDawnModdingTool
             this.setNameInfo();
         }
 
-        public void addTo(GrimObject obj)
+        public void addTo(TQObject obj)
         {
             obj.Dict[this.tableName] = table;
             obj.Dict[this.minLevelName] = minLevel;
@@ -22,7 +22,7 @@ namespace GrimDawnModdingTool
             obj.Dict[this.weightName] = weight;
         }
 
-        public void setData(GrimObject obj)
+        public void setData(TQObject obj)
         {
             this.table = obj.Dict[tableName];
             this.weight = obj.Dict[weightName];
@@ -38,7 +38,7 @@ namespace GrimDawnModdingTool
             this.maxLevelName = typeName + "TableLevelMax" + number;
         }
 
-        public bool exists(GrimObject obj)
+        public bool exists(TQObject obj)
         {
             return obj.Dict.ContainsKey(this.tableName);
         }

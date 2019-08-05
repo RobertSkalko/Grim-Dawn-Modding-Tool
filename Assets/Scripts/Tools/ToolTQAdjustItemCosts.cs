@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,25 +13,33 @@ namespace GrimDawnModdingTool
         public override string Name { get => "ToolTQAdjustItemCosts"; }
         public override string Description { get; }
 
+        public override Predicate<TQObject> GetObjectPredicate {
+            get =>
+            new Predicate<TQObject>(x => x.Dict.ContainsKey("templateName") && x.Dict["templateName"].Contains("ItemCost") && x.anyKeyContains("Equation"));
+        }
+
+        public override Predicate<string> GetFilePathPredicate {
+            get =>
+            new Predicate<string>(x => true);
+        }
+
         protected override void Action()
         {
             float multi = float.Parse(Save.Instance.InputCommand);
 
-            List<GrimObject> list = new List<GrimObject>(FileManager.GetObjectsFromAllFilesInPath(Path.Combine(Save.Instance.FilesToEditPath, "records", "game"), true).Where(x => x.Dict.ContainsKey("templateName") && x.Dict["templateName"].Equals("database\\Templates\\ItemCost.tpl")));
+            ConcurrentBag<TQObject> list = GetAllObjects(Save.Instance.GetRecordsPath());
 
-            var newlist = new List<GrimObject>();
+            var newlist = new List<TQObject>();
 
-            foreach (GrimObject obj in list) {
+            foreach (TQObject obj in list) {
                 foreach (var key in obj.Dict.Keys.ToList()) {
-                    if (key.Contains("Equation")) {
-                        obj.Dict[key] = multi + "*(" + obj.Dict[key] + ")";
-                    }
+                    obj.Dict[key] = multi + "*(" + obj.Dict[key] + ")";
                 }
 
                 newlist.Add(obj);
             }
 
-            FileManager.WriteCopy(Save.Instance.OutputPath, newlist);
+            FileManager.WriteCopy(Save.Instance.GetOutputPath(), newlist);
         }
     }
 }

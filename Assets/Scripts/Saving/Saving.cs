@@ -9,6 +9,7 @@ namespace GrimDawnModdingTool
         private void Start()
         {
             Save.TryLoadStateFromFile();
+            Save.Instance.CreateFoldersIfEmpty();
         }
 
         private void OnApplicationQuit()
