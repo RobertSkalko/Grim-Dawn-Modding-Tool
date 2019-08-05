@@ -11,7 +11,7 @@ namespace GrimDawnModdingTool
     {
         public static Dictionary<string, TQObject> makeAffixDict(ConcurrentBag<TQObject> loottables)
         {
-            Dictionary<string, List<TQAffixTable>> dict = new Dictionary<string, List<TQAffixTable>>(); // here all the affixes stored
+            Dictionary<string, HashSet<TQAffixTable>> dict = new Dictionary<string, HashSet<TQAffixTable>>(); // here all the affixes stored
 
             foreach (TQObject loottable in loottables) {
                 TQObject item = loottable.getFirstObjectOfLootTable();
@@ -20,7 +20,7 @@ namespace GrimDawnModdingTool
                     string key = item.GetClass();
 
                     if (dict.ContainsKey(key) == false) {
-                        dict[key] = new List<TQAffixTable>();
+                        dict[key] = new HashSet<TQAffixTable>();
                     }
 
                     var suffixAndPrefix = new List<string>() { "suffix", "prefix" };
@@ -34,20 +34,11 @@ namespace GrimDawnModdingTool
                         y = 0;
 
                         while (fails < 2) {
-                            var table = new TQAffixTable(y, affixType);
+                            var table = new TQAffixTable(y, affixType, item.GetItemLevel());
                             if (table.exists(loottable)) {
                                 table.setData(loottable);
 
-                                bool add = true;
-
-                                foreach (TQAffixTable checktable in dict[key]) {
-                                    if (table.table == checktable.table) {
-                                        add = false;
-                                    }
-                                }
-                                if (add) {
-                                    dict[key].Add(table);
-                                }
+                                dict[key].Add(table);
                             }
                             else {
                                 fails++;
@@ -60,7 +51,7 @@ namespace GrimDawnModdingTool
 
             var finaldict = new Dictionary<string, TQObject>();
 
-            foreach (KeyValuePair<string, List<TQAffixTable>> entry in dict) {
+            foreach (KeyValuePair<string, HashSet<TQAffixTable>> entry in dict) {
                 var sorted = new Dictionary<string, List<TQAffixTable>>();
 
                 foreach (TQAffixTable table in entry.Value) {

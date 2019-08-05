@@ -28,10 +28,8 @@ namespace GrimDawnModdingTool
             ConcurrentBag<TQObject> list = GetAllObjects(Save.Instance.GetRecordsPath());
 
             foreach (TQObject obj in list) {
-                if (obj.Dict["hidePrefixName"].Equals("1") || obj.Dict["hideSuffixName"].Equals("1")) {
-                    obj.Dict["hidePrefixName"] = "0";
-                    obj.Dict["hideSuffixName"] = "0";
-                }
+                obj.Dict["hidePrefixName"] = "0";
+                obj.Dict["hideSuffixName"] = "0";
             }
 
             FileManager.WriteCopy(Save.Instance.GetOutputPath(), list);
