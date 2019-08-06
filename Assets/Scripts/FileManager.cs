@@ -18,6 +18,15 @@ namespace GrimDawnModdingTool
 {
     public static class FileManager
     {
+        private static void CompileAllFiles() // todo trying something
+        {
+            Parallel.ForEach(Directory.EnumerateFiles(Save.Instance.GetDataPath(), "*", SearchOption.AllDirectories), (file) => {
+                if (file.EndsWith(".code")) {
+                    string txt = File.ReadAllText(file);
+                }
+            });
+        }
+
         public static void WriteCopy(string path, IEnumerable<TQObject> files)
         {
             foreach (TQObject obj in files) {

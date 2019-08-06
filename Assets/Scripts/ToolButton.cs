@@ -30,8 +30,6 @@ namespace GrimDawnModdingTool
             Debug.Log("Everything Took: " + stopwatch.ElapsedMilliseconds + " Miliseconds or " + stopwatch.ElapsedMilliseconds / 1000 + " Seconds");
         }
 
-        private string ending = ".dbr";
-
         public ConcurrentBag<TQObject> GetAllObjects(string path)
         {
             return FileManager.GetAllObjects(path, this.GetFilePathPredicate, this.GetObjectPredicate);

@@ -35,6 +35,11 @@ namespace GrimDawnModdingTool
             return FilePath.CompareTo(other.FilePath) == 1 ? 1 : 0;
         }
 
+        public bool IsMonsterPool()
+        {
+            return this.HasTemplate() && this.GetTemplate().Contains("ProxyPool.tpl");
+        }
+
         public bool HasTemplate()
         {
             return Dict.ContainsKey("templateName");
@@ -83,11 +88,16 @@ namespace GrimDawnModdingTool
             SetupDBInfo(text);
         }
 
-        public TQObject(string text, string filepath)
+        public static TQObject FromTextAndFilepath(string text, string filepath)
         {
-            this.FilePath = filepath;
+            TQObject obj = new TQObject
+            {
+                FilePath = filepath
+            };
 
-            SetupDBInfo(text);
+            obj.SetupDBInfo(text);
+
+            return obj;
         }
 
         public TQObject()
