@@ -12,7 +12,7 @@ namespace GrimDawnModdingTool
         public override string Description { get; }
         public override Predicate<TQObject> GetObjectPredicate { get => new Predicate<TQObject>(x => x.IsProxyPoolEquation()); }
 
-        public override Predicate<string> GetFilePathPredicate { get => new Predicate<string>(x => x.Contains("prox") && x.Contains("boss") == false); }
+        public override Predicate<string> GetFilePathPredicate { get => new Predicate<string>(x => x.Contains("prox") && x.Contains("boss") == false && x.Contains("quest") == false); }
 
         protected override void Action()
         {

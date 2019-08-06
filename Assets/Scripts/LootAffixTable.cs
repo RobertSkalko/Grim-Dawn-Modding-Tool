@@ -5,7 +5,10 @@ using UnityEngine;
 namespace GrimDawnModdingTool
 {
     public class LootAffixContainer
+
     {
+        public static LootAffixContainer empty = new LootAffixContainer();
+
         public TQObject prefixes = new TQObject();
         public TQObject suffixes = new TQObject();
 
@@ -56,7 +59,14 @@ namespace GrimDawnModdingTool
 
         public LootAffixContainer GetAffixesFor(TQObject item)
         {
-            return affixesForLevelRanges[GetlvlRange(item.GetItemLevel())];
+            int lvlrange = GetlvlRange(item.GetItemLevel());
+
+            if (affixesForLevelRanges.ContainsKey(lvlrange)) {
+                return affixesForLevelRanges[lvlrange];
+            }
+            else {
+                return LootAffixContainer.empty;
+            }
         }
 
         public static List<int> LEVEL_RANGES = new List<int>() { 10, 20, 35, 50, 60, 80, 100 };
