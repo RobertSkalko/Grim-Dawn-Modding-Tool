@@ -14,6 +14,11 @@ namespace GrimDawnModdingTool
             return this.Dict == other.Dict;
         }
 
+        public bool IsProxyPoolEquation()
+        {
+            return this.HasTemplate() && this.GetTemplate().Contains("ProxyPoolEquation.tpl");
+        }
+
         public void ReplaceWithAllValuesOf(TQObject obj)
         {
             foreach (KeyValuePair<string, string> entry in obj.Dict) {

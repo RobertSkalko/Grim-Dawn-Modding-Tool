@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections;
-
-using System.Collections;
-
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -38,10 +35,9 @@ namespace GrimDawnModdingTool
                 foreach (var key in obj.Dict.Keys.ToList()) {
                     if (key.Contains("itemCost")) {
                         obj.Dict["itemCost"] = (multi * float.Parse(obj.Dict["itemCost"])) + "";
+                        newlist.Add(obj);
                     }
                 }
-
-                newlist.Add(obj);
             }
 
             FileManager.WriteCopy(Save.Instance.GetOutputPath(), newlist);
