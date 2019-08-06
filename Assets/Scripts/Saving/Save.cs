@@ -13,7 +13,7 @@ namespace GrimDawnModdingTool
         public static Save Instance {
             get {
                 if (instance == null) {
-                    TryLoadStateFromFile();
+                    instance = new Save();
                 }
 
                 return instance;
@@ -62,45 +62,6 @@ namespace GrimDawnModdingTool
             return SaveDataPathWithoutFileName + "data/";
         }
 
-        public string InputCommand;
-
-        private static JsonSerializerSettings serSettings = new JsonSerializerSettings()
-        {
-            TypeNameHandling = TypeNameHandling.Auto,
-            PreserveReferencesHandling = PreserveReferencesHandling.Objects,
-        };
-
-        private static JsonSerializerSettings deSettings = new JsonSerializerSettings()
-        {
-            TypeNameHandling = TypeNameHandling.Auto,
-            ObjectCreationHandling = ObjectCreationHandling.Replace,
-        };
-
-        public static void TryLoadStateFromFile()
-        {
-            string savepath = SaveDataPath;
-
-            if (File.Exists(savepath)) {
-                instance = (JsonConvert.DeserializeObject<Save>(File.ReadAllText(savepath), deSettings) != null) ? JsonConvert.DeserializeObject<Save>(File.ReadAllText(savepath), deSettings) : new Save();
-            }
-            else {
-                instance = new Save();
-            }
-        }
-
-        public static void SaveStateToFile()
-        {
-            string json = JsonConvert.SerializeObject(Instance, Formatting.Indented, serSettings);
-
-            if (!Directory.Exists(SaveDataPathWithoutFileName)) {
-                Directory.CreateDirectory(SaveDataPathWithoutFileName);
-            }
-
-            if (!System.IO.File.Exists(SaveDataPath)) {
-                System.IO.File.Create(SaveFileName);
-            }
-
-            System.IO.File.WriteAllText(SaveDataPath, json);
-        }
+        public string InputCommand = "";
     }
 }
