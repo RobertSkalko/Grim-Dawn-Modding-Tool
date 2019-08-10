@@ -16,14 +16,14 @@ namespace GrimDawnModdingTool
 
         protected override void Action()
         {
-            ConcurrentBag<TQObject> list = GetAllObjects(Save.Instance.GetRecordsPath());
+            ConcurrentBag<TQObject> list = this.GetAllObjects(Save.Instance.GetRecordsPath());
 
             foreach (TQObject obj in list) {
                 obj.Dict["championMinEquation"] = 1 + "+" + obj.Dict["championMinEquation"];
                 obj.Dict["championMaxEquation"] = 3 + "+" + obj.Dict["championMaxEquation"];
             }
 
-            FileManager.WriteCopy(Save.Instance.GetOutputPath(), list);
+            this.WriteToOutput(list);
         }
     }
 }

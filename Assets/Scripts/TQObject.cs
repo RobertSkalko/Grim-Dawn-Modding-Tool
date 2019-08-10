@@ -11,7 +11,18 @@ namespace GrimDawnModdingTool
     {
         public bool Equals(TQObject other)
         {
-            return this.Dict == other.Dict;
+            return this.FilePath
+                 == other.FilePath && this.Dict == other.Dict;
+        }
+
+        public bool hasCost()
+        {
+            return Dict.ContainsKey("itemCost");
+        }
+
+        public string getCost()
+        {
+            return Dict["itemCost"];
         }
 
         public bool IsProxyPoolEquation()

@@ -15,7 +15,7 @@ namespace GrimDawnModdingTool
 
         public override Predicate<TQObject> GetObjectPredicate {
             get =>
-            new Predicate<TQObject>(x => x.HasClass() && x.GetClass().Contains("OneShot_Potion"));
+            new Predicate<TQObject>(x => x.HasClass() && x.GetClass().Contains("OneShot_Potion") && x.hasCost());
         }
 
         public override Predicate<string> GetFilePathPredicate {
@@ -29,18 +29,11 @@ namespace GrimDawnModdingTool
 
             ConcurrentBag<TQObject> list = GetAllObjects(Save.Instance.GetRecordsPath());
 
-            var newlist = new List<TQObject>();
-
             foreach (TQObject obj in list) {
-                foreach (var key in obj.Dict.Keys.ToList()) {
-                    if (key.Contains("itemCost")) {
-                        obj.Dict["itemCost"] = (multi * float.Parse(obj.Dict["itemCost"])) + "";
-                        newlist.Add(obj);
-                    }
-                }
+                obj.Dict["itemCost"] = (multi * float.Parse(obj.getCost())) + "";
             }
 
-            FileManager.WriteCopy(Save.Instance.GetOutputPath(), newlist);
+            this.WriteToOutput(list);
         }
     }
 }
