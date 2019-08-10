@@ -27,7 +27,7 @@ namespace GrimDawnModdingTool
         {
             float multi = float.Parse(Save.Instance.InputCommand);
 
-            ConcurrentBag<TQObject> list = GetAllObjects(Save.Instance.GetRecordsPath());
+            ConcurrentBag<TQObject> list = this.GetAllObjectsInRecordsPath();
 
             foreach (TQObject obj in list) {
                 obj.Dict["itemCost"] = (multi * float.Parse(obj.getCost())) + "";

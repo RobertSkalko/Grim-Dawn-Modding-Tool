@@ -35,6 +35,11 @@ namespace GrimDawnModdingTool
             return FileManager.GetAllObjects(path, this.GetFilePathPredicate, this.GetObjectPredicate);
         }
 
+        public ConcurrentBag<TQObject> GetAllObjectsInRecordsPath()
+        {
+            return FileManager.GetAllObjects(Save.Instance.GetRecordsPath(), this.GetFilePathPredicate, this.GetObjectPredicate);
+        }
+
         public void WriteToOutput(IEnumerable<TQObject> list)
         {
             FileManager.WriteCopy(Save.Instance.GetOutputPath(), list);
