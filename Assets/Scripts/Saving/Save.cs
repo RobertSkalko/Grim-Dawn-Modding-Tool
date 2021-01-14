@@ -22,9 +22,8 @@ namespace GrimDawnModdingTool
             set => instance = value;
         }
 
-        private static string SaveFileName = "Save.txt";
-        private static string SaveDataPath = Application.persistentDataPath + "/SavedData/" + SaveFileName;
-        private static string SaveDataPathWithoutFileName = Application.persistentDataPath + "/SavedData/";
+        private static string SaveFileName = "Save.txt";       
+        private static string SaveDataPathWithoutFileName = "D:/TQ modding tool Input output files/";
 
         public void CreateFoldersIfEmpty()
         {

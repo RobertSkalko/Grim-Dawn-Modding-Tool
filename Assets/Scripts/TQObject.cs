@@ -33,7 +33,7 @@ namespace GrimDawnModdingTool
         public void ReplaceWithAllValuesOf(TQObject obj)
         {
             foreach (KeyValuePair<string, string> entry in obj.Dict) {
-                this.Dict[entry.Key] = entry.Value;
+                this.Dict[entry.Key] = entry.Value;               
             }
         }
 

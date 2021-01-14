@@ -8,11 +8,12 @@ namespace GrimDawnModdingTool
     public static class TQOjbectExtensions
     {
         private static string ITEM_CLASSIFICATION = "itemClassification";
+        private static string ITEM_NAMES = "itemNames";
 
         public static TQObject getFirstObjectOfLootTable(this TQObject loottable)
         {
-            if (loottable.Dict.ContainsKey("itemNames")) {
-                string path = loottable.Dict["itemNames"].getFirstRecord().GetPathOfRecord();
+            if (loottable.Dict.ContainsKey(ITEM_NAMES)) {
+                string path = loottable.Dict[ITEM_NAMES].getFirstRecord().GetPathOfRecord();
 
                 if (File.Exists(path)) {
                     return new TQObject(path);
@@ -43,8 +44,8 @@ namespace GrimDawnModdingTool
         {
             //List<string> mustbezero = new List<string>() { "suffixOnly", "prefixOnly", "rarePrefixOnly", "bothPrefixSuffix", "rareBothPrefixSuffix" };
 
-            if (obj.Dict.ContainsKey("itemNames")) {
-                string path = obj.Dict["itemNames"].getFirstRecord().GetPathOfRecord();
+            if (obj.Dict.ContainsKey(ITEM_NAMES)) {
+                string path = obj.Dict[ITEM_NAMES].getFirstRecord().GetPathOfRecord();
 
                 if (File.Exists(path)) {
                     TQObject item = new TQObject(path);

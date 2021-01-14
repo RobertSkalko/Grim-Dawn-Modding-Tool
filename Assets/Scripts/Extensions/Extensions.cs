@@ -23,12 +23,9 @@ namespace GrimDawnModdingTool
             }
         }
 
-        public static string GetPathOfRecord(this string record)
-        {
-            if (record.Contains("ecord") == false) {
-                Debug.Log(record + " is not a record");
-            }
 
+        public static string GetPathOfRecord(this string record)
+        {         
             return Save.Instance.GetFolder() + record;
         }
 

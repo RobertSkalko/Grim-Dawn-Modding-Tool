@@ -30,6 +30,11 @@ namespace GrimDawnModdingTool
             Debug.Log("Everything Took: " + stopwatch.ElapsedMilliseconds + " Miliseconds or " + stopwatch.ElapsedMilliseconds / 1000 + " Seconds");
         }
 
+        public string GetInput()
+        {
+            return Save.Instance.InputCommand;
+        }
+
         public ConcurrentBag<TQObject> GetAllObjects(string path)
         {
             return FileManager.GetAllObjects(path, this.GetFilePathPredicate, this.GetObjectPredicate);

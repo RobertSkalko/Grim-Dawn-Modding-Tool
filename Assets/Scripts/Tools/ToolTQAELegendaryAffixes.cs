@@ -15,23 +15,30 @@ namespace GrimDawnModdingTool
 
         public override Predicate<TQObject> GetObjectPredicate {
             get =>
-            new Predicate<TQObject>(x => true);
+            new Predicate<TQObject>(x => x.HasClass() && x.GetClass().Contains("LootItemTable") && x.getFirstObjectOfLootTable() != null);
         }
 
         public override Predicate<string> GetFilePathPredicate {
             get =>
-            new Predicate<string>(x => x.Contains("loottables"));
+            new Predicate<string>(x => x.Contains("loottables") || x.Contains("lootables"));
         }
 
         protected override void Action()
         {
             TQObject chances = new TQObject(Path.Combine(Save.Instance.GetDataPath(), "chances.txt"));
             ConcurrentBag<TQObject> allLootTables = GetAllObjects(Save.Instance.GetRecordsPath());
+            
+            Debug.Log("There are " + allLootTables.Count + " item loot tables.");
+
             LootAffixes affixes = new LootAffixes(allLootTables);
             var uniqueitemLoottableList = allLootTables.Where(x => x.isUniqueItemLootTable()).ToList();
 
-            Debug.Log("There are " + uniqueitemLoottableList.Count + " unique items.");
+          
+            Debug.Log("There are " + uniqueitemLoottableList.Count + " unique item loot tables.");
 
+            affixes.testPrint();
+
+            
             foreach (TQObject loottable in uniqueitemLoottableList) {
                 TQObject gear = loottable.getFirstObjectOfLootTable();
 
@@ -39,6 +46,10 @@ namespace GrimDawnModdingTool
                     string type = gear.GetClass();
 
                     affixes.TryGiveAffixesToLoottable(loottable, type);
+                }
+                else
+                {
+                    Debug.Log("gear is null!!!");
                 }
             }
 

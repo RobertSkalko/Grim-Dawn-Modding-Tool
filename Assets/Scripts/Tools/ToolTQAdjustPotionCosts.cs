@@ -25,7 +25,7 @@ namespace GrimDawnModdingTool
 
         protected override void Action()
         {
-            float multi = float.Parse(Save.Instance.InputCommand);
+            float multi = float.Parse(GetInput());
 
             ConcurrentBag<TQObject> list = this.GetAllObjectsInRecordsPath();
 

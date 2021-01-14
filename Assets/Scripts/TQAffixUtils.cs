@@ -9,6 +9,8 @@ namespace GrimDawnModdingTool
 {
     public class TQAffixUtils : MonoBehaviour
     {
+        private static  List<string> suffixAndPrefix =  new List<string>() { "suffix", "prefix" };
+
         public static Dictionary<string, LootAffixTable> makeAffixDict(ConcurrentBag<TQObject> loottables)
         {
             Dictionary<string, HashSet<TQAffixTable>> dict = new Dictionary<string, HashSet<TQAffixTable>>(); // here all the affixes stored
@@ -23,29 +25,40 @@ namespace GrimDawnModdingTool
                         dict[key] = new HashSet<TQAffixTable>();
                     }
 
-                    var suffixAndPrefix = new List<string>() { "suffix", "prefix" };
-
-                    int fails = 0;
-
-                    int y = 0;
-
+                                      
+                  
+                   
                     foreach (string affixType in suffixAndPrefix) {
-                        fails = 0;
-                        y = 0;
+                                              
+                        int fails = 0;
+                        int found = 0;
+                        int y = 1;
 
-                        while (fails < 2) {
-                            var table = new TQAffixTable(y, affixType, item.GetItemLevel());
+
+                        while (fails < 10) {
+                            var table = new TQAffixTable(y, affixType, loottable.getFirstObjectOfLootTable().GetItemLevel());
                             if (table.exists(loottable)) {
                                 table.setData(loottable);
 
                                 dict[key].Add(table);
+                                
+                                //Debug.Log("found affixes for " + key);
+
+                                found++;
+                              
                             }
                             else {
                                 fails++;
                             }
-                            y++;
+                            y++;                            
                         }
+
+                    
                     }
+                }
+                else
+                {
+                    Debug.Log("item null");
                 }
             }
 
@@ -55,12 +68,12 @@ namespace GrimDawnModdingTool
                 var sorted = new Dictionary<string, List<TQAffixTable>>();
 
                 foreach (TQAffixTable table in entry.Value) {
-                    if (sorted.ContainsKey(table.typeName)) {
-                        sorted[table.typeName].Add(table);
-                    }
-                    else {
+                    if (!sorted.ContainsKey(table.typeName)) {
                         sorted[table.typeName] = new List<TQAffixTable>();
+                      
                     }
+                    sorted[table.typeName].Add(table);
+
                 }
                 var counts = new Dictionary<string, int>();
 
@@ -74,19 +87,20 @@ namespace GrimDawnModdingTool
                         }
                         t.number = counts[sort.Key];
 
-                        if (finaldict.ContainsKey(entry.Key)) {
-                            finaldict[entry.Key].AddAffixTables(t);
-                        }
-                        else {
+                        if (!finaldict.ContainsKey(entry.Key)) {
                             finaldict[entry.Key] = new LootAffixTable();
+                         
                         }
+                        finaldict[entry.Key].AddAffixTables(t);
                     }
                 }
             }
 
-            // im kinda lost on what the old code up does..
+          
 
-            string keys = "";
+                // im kinda lost on what the old code up does..
+
+                string keys = "";
             new List<string>(dict.Keys).ForEach(x => keys += " " + x);
             Debug.Log(keys);
 
